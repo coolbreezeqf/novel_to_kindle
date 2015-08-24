@@ -1,0 +1,16 @@
+搜索书籍
+http://api.zhuishushenqi.com/book/fuzzy-search?query=斗破苍穹
+
+
+书籍详情
+http://api.zhuishushenqi.com/book/535ab5d45b653a9a780019b0
+
+
+章节列表
+http://api.zhuishushenqi.com/mix-toc/535ab5d45b653a9a780019b0
+
+
+
+
+
+520da5d2dd2dfa6926000fc0

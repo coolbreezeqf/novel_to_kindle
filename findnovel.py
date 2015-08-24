@@ -113,10 +113,10 @@ class novel_txt():
         '''
         chapter_content=self.get_urlcontent(chapter_url_list[0])
         print chapter_content
-        pattern = re.compile('line-height(.*?) <div class="footerbar">',re.S)
+        pattern = re.compile('24px;"><p>',re.S)
         result = re.search(pattern,chapter_content)
         if result:
-            print result.group(1)
+            print 'y'
         else:
             print 'none'
         # for i in chapter_url_list:
