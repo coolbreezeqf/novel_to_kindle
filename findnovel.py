@@ -17,6 +17,7 @@ class novel_txt():
 
 
 
+
     def get_urlcontent(self,url):
         try:
             request = urllib2.Request(url)#读取网页
@@ -29,6 +30,7 @@ class novel_txt():
             print e.reason
 
     def get_booklist(self,search_content):
+        # print search_content
         pattern = re.compile('href="/w/novel/(.*?)/0.*?> (.*?)</a.*?searchAuthor/(.*?)_0_1.*?class="lastchapter">(.*?)</div>',re.S)
         #正则捕获，id，标题，作者，最新章节
         results = re.findall(pattern,search_content)#获取全部匹配项目

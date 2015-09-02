@@ -12,3 +12,8 @@ class GetNovelItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
     pass
+
+class DmozItem(Item):
+    title = Field()
+    link = Field()
+    desc = Field()
