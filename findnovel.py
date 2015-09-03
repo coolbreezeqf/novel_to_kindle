@@ -32,25 +32,25 @@ class novel_txt():
     def get_booklist(self,search_content):
         # print search_content
         pattern = re.compile('href="/w/novel/(.*?)/0.*?> (.*?)</a.*?searchAuthor/(.*?)_0_1.*?class="lastchapter">(.*?)</div>',re.S)
-        #正则捕获，id，标题，作者，最新章节
+        #正则捕获，ID，标题，作者，最新章节
         results = re.findall(pattern,search_content)#获取全部匹配项目
         number = 1
-        bookid = [] #初始化小说list
+        bookID = [] #初始化小说list
         for item in results:
-            bookid.append(str(item[0]))
+            bookID.append(str(item[0]))
             print str(number)+'\n'+item[1]+'\n'+item[2]+'\n'+item[3]+'\n'
             number += 1
-        #print bookid  #测试小说list
+        #print bookID  #测试小说list
         selcet_booknumber=int(raw_input('请选择需要推送的小说序号:'))-1
-        return bookid[int(selcet_booknumber)]
+        return bookID[int(selcet_booknumber)]
 
 
-    def get_book_catalog_url_list(self,select_bookid):
+    def get_book_catalog_url_list(self,select_bookID):
         '''
-        :param select_bookid: 手动输入的小说序号
+        :param select_bookID: 手动输入的小说序号
         :return:返回小说目录页的所有页list
         '''
-        book_url_0='http://book.easou.com/w/novel/'+str(select_bookid)+'/0.html' #目录页面（不完整）
+        book_url_0='http://book.easou.com/w/novel/'+str(select_bookID)+'/0.html' #目录页面（不完整）
         book_url_0_content=self.get_urlcontent(book_url_0)
         pattern = re.compile(u'<span class="category"><a href="(.*?)/1_0\.html">\u67e5\u770b\u76ee\u5f55<',re.S)
         # 正则捕获完整目录页的网址
@@ -97,14 +97,14 @@ class novel_txt():
         :para :book_chapter_number:
         :return:
         '''
-        bookid_2_pattern = re.compile('<li><span><a class="common" href="/w/read/(.*?)/'+str((self.pages_number-1)*999+1)+'.html">'+str((self.pages_number-1)*999+1),re.S)
-        bookid_2_result = re.search(bookid_2_pattern,self.book_catalog_end_url_content)
-        if bookid_2_result:
-            print bookid_2_result.group(1)
+        bookID_2_pattern = re.compile('<li><span><a class="common" href="/w/read/(.*?)/'+str((self.pages_number-1)*999+1)+'.html">'+str((self.pages_number-1)*999+1),re.S)
+        bookID_2_result = re.search(bookID_2_pattern,self.book_catalog_end_url_content)
+        if bookID_2_result:
+            print bookID_2_result.group(1)
 
         book_chapter_list=[]
         for item in range (1,chapter_number+1):
-            book_chapter_list.append('http://book.easou.com/w/read/'+str(bookid_2_result.group(1))+'/'+str(item)+'.html')
+            book_chapter_list.append('http://book.easou.com/w/read/'+str(bookID_2_result.group(1))+'/'+str(item)+'.html')
         return book_chapter_list
 
 
@@ -129,9 +129,9 @@ class novel_txt():
         self.searchkey='斗破苍穹'   #搜索内容
         self.searchurl='http://book.easou.com/w/searchNovel/'+self.searchkey+'_0_1.html'  #搜索结果页
         self.search_content = self.get_urlcontent(self.searchurl)   #获取小说搜索页url内容
-        self.select_bookid=self.get_booklist(self.search_content)   #获取小说搜索页小说字段，并打印
-        print self.select_bookid #print 选择的小说id
-        self.book_catalog_url_list = self.get_book_catalog_url_list(self.select_bookid) #获取小说目录页的url
+        self.select_bookID=self.get_booklist(self.search_content)   #获取小说搜索页小说字段，并打印
+        print self.select_bookID #print 选择的小说ID
+        self.book_catalog_url_list = self.get_book_catalog_url_list(self.select_bookID) #获取小说目录页的url
         self.pages_number = len(self.book_catalog_url_list)
         self.chapter_number = self.get_chapter_number(self.book_catalog_url_list)
         print self.chapter_number

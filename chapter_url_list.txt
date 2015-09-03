@@ -1,0 +1,3 @@
+[u'http://read.qidian.com/BookReader/2094528,34305712.aspx', u'http://read.qidian.com/BookReader/2094528,34366302.aspx']
+
+.//*[@id='chaptercontent']

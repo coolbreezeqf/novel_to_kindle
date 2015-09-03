@@ -1,13 +1,12 @@
 搜索书籍
-http://api.zhuishushenqi.com/book/fuzzy-search?query=斗破苍穹
-
+http://api.zhuishushenqi.com/book/fuzzy-search?query=将军的小娘子
 
 书籍详情
-http://api.zhuishushenqi.com/book/535ab5d45b653a9a780019b0
+http://api.zhuishushenqi.com/book/5447871b8fb5a55034bab0ec
 
 
 章节列表
-http://api.zhuishushenqi.com/mix-toc/535ab5d45b653a9a780019b0
+http://api.zhuishushenqi.com/mix-toc/5447871b8fb5a55034bab0ec
 
 
 
