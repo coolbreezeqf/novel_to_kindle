@@ -49,7 +49,7 @@ class Sendemail():
 
 
 if __name__ == '__main__':
-    test = Sendemail('13901619126','yang0311','smtp.163.com','13901619126@163.com','475785388@qq.com','hello,class')
+    test = Sendemail('13901619126','######这里加盐','smtp.163.com','13901619126@163.com','475785388@qq.com','hello,class')
     test.set_emailbody('yes i can')
     test.set_attachfile()
     test.sendemail()
