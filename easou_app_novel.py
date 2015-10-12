@@ -1,22 +1,65 @@
 # coding=utf-8
 import requests
 import json
+import simplejson
 
-gid='14672722'
-nid='14812023'
-url = 'http://api.easou.com/api/bookapp/chapter_list.m?gid='+gid+'&nid='+nid+'&page_id=1&size=9999&cid=eef_'
-r = requests.get(url)
-print (r.content)
+class novel:
+    def __init__(self):
+        self.name=''
+        self.gid=''
+        self.nid=''
+
+    def setnovel(self,name,gid,nid):
+        self.name = name
+        self.gid = gid
+        self.nid =nid
 
 
 
 
 
-# keyword='将军家的小娘子'
-# page = '1'
-# url = 'http://api.easou.com/api/bookapp/search.m?word='+keyword+'&page_id='+page+'&count=20&cid=eef_'
+def search_novel():
+    keyword = raw_input('请输入小说关键字：')
+    page = '1'
+    url = 'http://api.easou.com/api/bookapp/search.m?word='+keyword+'&page_id='+page+'&count=20&cid=eef_'
+    result = requests.get(url).content
+    # print result
+    jsonval = json.loads(result)
+    number = 1
+    for val in jsonval['items']:
+        print '序号：',
+        print number
+        number +=1
+        print '书名：',
+        print val['name']
+        print '作者：',
+        print val['author']
+        print
+search_novel()
+
+
+
+
+
+
+
+
+
+
+
+
+# 显示全部章节
+# gid='14672722'
+# nid='14812023'
+# url = 'http://api.easou.com/api/bookapp/chapter_list.m?gid='+gid+'&nid='+nid+'&page_id=1&size=9999&cid=eef_'
 # r = requests.get(url)
 # print (r.content)
+
+
+
+
+
+
 
 
 
