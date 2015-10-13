@@ -2,18 +2,79 @@
 import requests
 import json
 import simplejson
+'''
+下面三行可以解决大部分编码问题
+'''
+import sys
+reload(sys)
+sys.setdefaultencoding( "utf-8" )
+
 
 class novel:
     def __init__(self):
         self.name=''
         self.gid=''
         self.nid=''
+        self.chapter_list=[]
 
-    def setnovel(self,name,gid,nid):
-        self.name = name
-        self.gid = gid
-        self.nid =nid
+    def set_novel(self,name,gid,nid):
+        self.name = unicode(name)
+        self.gid = unicode(gid)
+        self.nid =unicode(nid)
 
+    def get_chapter(self):
+        url = 'http://api.easou.com/api/bookapp/chapter_list.m?gid='+self.gid+'&nid='+self.nid+'&page_id=1&size=9999&cid=eef_'
+        jsondata = requests.get(url).content
+        # print jsondata
+        jsonval = json.loads(jsondata)
+        number = 0
+        for val in jsonval['items']:
+            chapter = val['chapter_name']
+            # print chapter #test 输出全部章节名
+            self.chapter_list.append(chapter) #章节名导入list
+        # for i in self.chapter_list:
+        #     print i #输出章节列表
+
+    def get_chapter_content(self):
+        giddata = ''
+        niddata = ''
+        chapter_name_data = ''
+        sortdata = ''
+        sequencedata = ''
+        number = 0
+        for select_chapter in self.chapter_list:
+            number +=1
+            giddata = giddata + str(self.gid) + '!@'
+            niddata = niddata + str(self.nid) + '!@'
+            chapter_name_data = chapter_name_data+unicode(select_chapter) + '!@'
+            sortdata = sortdata + str(number) + '!@'
+            sequencedata = sequencedata + str(number-1) + '!@'
+            if number % 10 == 0:
+                # print giddata ,'\n', niddata ,'\n', chapter_name_data,'\n',sortdata,'\n',sequencedata #输出多个变量的值
+                self.postdata4downlaod(giddata,niddata,chapter_name_data,sortdata,sequencedata)
+                giddata = ''
+                niddata = ''
+                chapter_name_data = ''
+                sortdata = ''
+                sequencedata = ''
+            else:pass
+        self.postdata4downlaod(giddata,niddata,chapter_name_data,sortdata,sequencedata)
+
+
+    def postdata4downlaod(self,giddata,niddata,chapter_name_data,sortdata,sequencedata):
+        # data = ('gid=2861249!@2861249!@2861249!@2861249!@2861249!@2861249!@2861249!@2861249!@2861249!@2861249&nid=14289062!@14289062!@14289062!@14289062!@14289062!@14289062!@14289062!@14289062!@14289062!@14289062&sort=81!@82!@83!@84!@85!@86!@87!@88!@89!@90&gsort=0!@0!@0!@0!@0!@0!@0!@0!@0!@0&chapter_name=耍流氓!@老牛吃嫩草（上）!@老牛吃嫩草（下）!@蛇打七寸!@小冤家!@你是我的!@情哥哥!@美羊羊和灰太狼!@小乖宝!@军训&sequence=80!@81!@82!@83!@84!@85!@86!@87!@88!@89')
+        data = str('gid='+giddata[:-2:]+'&nid='+niddata[:-2:]+'&sort='+sortdata[:-2:]+'&gsort=0!@0!@0!@0!@0!@0!@0!@0!@0!@0&chapter_name='+chapter_name_data[:-2:]+'&sequence='+sequencedata[:-2:])
+        # print data,'\n'
+        headers = {'Content-Type':'application/x-www-form-urlencoded', 'Accept-Encoding': 'gzip'} #定义post的头信息
+        url ='http://api.easou.com/api/bookapp/batch_chapter.m?cid=eef_&version=002&os=ios&udid=76fbeddf8b73c8b0fc065e2296b767579d8fda38&appverion=1018&ch=bnf1349_10388_001'
+        jsondata = requests.post(url=url, data=data, headers=headers).content #字节方式的响应体，会自动为你解码 gzip 和 deflate 压缩
+        # print jsondata,'\n','\n'
+        jsonval = json.loads(jsondata)
+        for val in jsonval['items']:
+            chapter = val['chapter_name']
+            content = val['content']
+            print chapter
+            print content,'\n','\n'
 
 
 
@@ -23,19 +84,20 @@ def search_novel():
     page = '1'
     url = 'http://api.easou.com/api/bookapp/search.m?word='+keyword+'&page_id='+page+'&count=20&cid=eef_'
     result = requests.get(url).content
-    # print result
-    jsonval = json.loads(result)
+    # print result # test获取搜索页
+    jsonval = json.loads(result) #用内置json库，读取json数据
     number = 1
     for val in jsonval['items']:
-        print '序号：',
-        print number
+        print '序号：', number
         number +=1
-        print '书名：',
-        print val['name']
-        print '作者：',
-        print val['author']
-        print
-search_novel()
+        print '书名：', val['name']
+        print '作者：', val['author'] ,'\n'
+    setnumber = raw_input('请输入需要推送的小说序号：')
+    # print jsonval['items'][int(setnumber)-1]['name'] #test 打印所选的小说名
+    gid = jsonval['items'][int(setnumber)-1]['gid']
+    nid = jsonval['items'][int(setnumber)-1]['nid']
+    name = jsonval['items'][int(setnumber)-1]['name']
+    return name,gid,nid
 
 
 
@@ -44,29 +106,14 @@ search_novel()
 
 
 
+(name,gid,nid)=search_novel()
+print name, gid, nid # test 返回所选小说信息
+Novel = novel()
+Novel.set_novel(name=name,gid=gid,nid=nid)
+Novel.get_chapter()
+Novel.get_chapter_content()
 
 
 
 
-# 显示全部章节
-# gid='14672722'
-# nid='14812023'
-# url = 'http://api.easou.com/api/bookapp/chapter_list.m?gid='+gid+'&nid='+nid+'&page_id=1&size=9999&cid=eef_'
-# r = requests.get(url)
-# print (r.content)
-
-
-
-
-
-
-
-
-
-# data = ('gid=2861249%21%402861249%21%402861249%21%402861249%21%402861249%21%402861249%21%402861249%21%402861249%21%402861249%21%402861249&nid=14289062%21%4014289062%21%4014289062%21%4014289062%21%4014289062%21%4014289062%21%4014289062%21%4014289062%21%4014289062%21%4014289062&sort=81%21%4082%21%4083%21%4084%21%4085%21%4086%21%4087%21%4088%21%4089%21%4090&gsort=0%21%400%21%400%21%400%21%400%21%400%21%400%21%400%21%400%21%400&chapter_name=%25E8%2580%258D%25E6%25B5%2581%25E6%25B0%2593%21%40%25E8%2580%2581%25E7%2589%259B%25E5%2590%2583%25E5%25AB%25A9%25E8%258D%2589%25EF%25BC%2588%25E4%25B8%258A%25EF%25BC%2589%21%40%25E8%2580%2581%25E7%2589%259B%25E5%2590%2583%25E5%25AB%25A9%25E8%258D%2589%25EF%25BC%2588%25E4%25B8%258B%25EF%25BC%2589%21%40%25E8%259B%2587%25E6%2589%2593%25E4%25B8%2583%25E5%25AF%25B8%21%40%25E5%25B0%258F%25E5%2586%25A4%25E5%25AE%25B6%21%40%25E4%25BD%25A0%25E6%2598%25AF%25E6%2588%2591%25E7%259A%2584%21%40%25E6%2583%2585%25E5%2593%25A5%25E5%2593%25A5%21%40%25E7%25BE%258E%25E7%25BE%258A%25E7%25BE%258A%25E5%2592%258C%25E7%2581%25B0%25E5%25A4%25AA%25E7%258B%25BC%21%40%25E5%25B0%258F%25E4%25B9%2596%25E5%25AE%259D%21%40%25E5%2586%259B%25E8%25AE%25AD&sequence=80%21%4081%21%4082%21%4083%21%4084%21%4085%21%4086%21%4087%21%4088%21%4089'
-#         )
-# headers = {'Content-Type':'application/x-www-form-urlencoded', 'Accept-Encoding': 'gzip'}
-# url ='http://api.easou.com/api/bookapp/batch_chapter.m?cid=eef_&version=002&os=ios&udid=76fbeddf8b73c8b0fc065e2296b767579d8fda38&appverion=1018&ch=bnf1349_10388_001'
-# r = requests.post(url=url, data=data, headers=headers)
-# print(r.content)   #字节方式的响应体，会自动为你解码 gzip 和 deflate 压缩
 
