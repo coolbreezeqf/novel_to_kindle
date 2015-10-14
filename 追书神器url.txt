@@ -1,15 +1,11 @@
-搜索书籍
-http://api.zhuishushenqi.com/book/fuzzy-search?query=将军的小娘子
+鎼滅储涔︾睄
+http://api.zhuishushenqi.com/book/fuzzy-search?query=灏嗗啗鐨勫皬濞樺瓙
 
-书籍详情
+涔︾睄璇︽儏
 http://api.zhuishushenqi.com/book/5447871b8fb5a55034bab0ec
 
 
-章节列表
+绔犺妭鍒楄〃
 http://api.zhuishushenqi.com/mix-toc/5447871b8fb5a55034bab0ec
 
 
-
-
-
-520da5d2dd2dfa6926000fc0
