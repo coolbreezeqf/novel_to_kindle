@@ -1,7 +1,7 @@
 # coding=utf-8
 import requests
 import json
-import simplejson
+import re
 '''
 下面三行可以解决大部分编码问题
 '''
@@ -70,34 +70,52 @@ class novel:
         jsondata = requests.post(url=url, data=data, headers=headers).content #字节方式的响应体，会自动为你解码 gzip 和 deflate 压缩
         # print jsondata,'\n','\n'
         jsonval = json.loads(jsondata)
+        novelfile=open('download_novel\\'+self.name+'.txt','a')
         for val in jsonval['items']:
             chapter = val['chapter_name']
             content = val['content']
-            print chapter
-            print content,'\n','\n'
-
+            novelfile.write(chapter)
+            novelfile.write('\n\n')
+            novelfile.write(content)
+            novelfile.write('\n\n')
+        novelfile.close()
 
 
 
 def search_novel():
-    keyword = raw_input('请输入小说关键字：')
-    page = '1'
-    url = 'http://api.easou.com/api/bookapp/search.m?word='+keyword+'&page_id='+page+'&count=20&cid=eef_'
-    result = requests.get(url).content
-    # print result # test获取搜索页
-    jsonval = json.loads(result) #用内置json库，读取json数据
-    number = 1
-    for val in jsonval['items']:
-        print '序号：', number
-        number +=1
-        print '书名：', val['name']
-        print '作者：', val['author'] ,'\n'
-    setnumber = raw_input('请输入需要推送的小说序号：')
-    # print jsonval['items'][int(setnumber)-1]['name'] #test 打印所选的小说名
-    gid = jsonval['items'][int(setnumber)-1]['gid']
-    nid = jsonval['items'][int(setnumber)-1]['nid']
-    name = jsonval['items'][int(setnumber)-1]['name']
-    return name,gid,nid
+    status = 0
+    while status == 0:
+        keyword = raw_input('请输入小说关键字：')
+        page = '1'
+        url = 'http://api.easou.com/api/bookapp/search.m?word='+keyword+'&page_id='+page+'&count=20&cid=eef_'
+        result = requests.get(url).content
+        # print result # test获取搜索页
+        if 'guess_like_items":[]' in result :
+            status = 1
+            jsonval = json.loads(result) #用内置json库，读取json数据
+            number = 1
+            for val in jsonval['items']:
+                print '序号：', number
+                number +=1
+                print '书名：', val['name']
+                print '作者：', val['author'] ,'\n'
+        else:
+            print '找不到该小说，请重新搜索'
+        while status == 1 :
+            setnumber = raw_input('请输入需要推送的小说序号（输入0重新搜索）：')
+            if setnumber == '0':
+                status = 0
+                break
+            else:
+                try:
+                    # print jsonval['items'][int(setnumber)-1]['name'] #test 打印所选的小说名
+                    gid = jsonval['items'][int(setnumber)-1]['gid']
+                    nid = jsonval['items'][int(setnumber)-1]['nid']
+                    name = jsonval['items'][int(setnumber)-1]['name']
+                    return name,gid,nid
+                except IndexError and ValueError:
+                    print '输入序号有误，请重新输入'
+
 
 
 
