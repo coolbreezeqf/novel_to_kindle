@@ -70,15 +70,20 @@ class novel:
         jsondata = requests.post(url=url, data=data, headers=headers).content #字节方式的响应体，会自动为你解码 gzip 和 deflate 压缩
         # print jsondata,'\n','\n'
         jsonval = json.loads(jsondata)
-        novelfile=open('download_novel\\'+self.name+'.txt','a')
+
+        list_number = 0
         for val in jsonval['items']:
+            novelfile=open('download_novel\\'+self.name+'.txt','a')
+            list_number += 1
             chapter = val['chapter_name']
             content = val['content']
             novelfile.write(chapter)
             novelfile.write('\n\n')
             novelfile.write(content)
             novelfile.write('\n\n')
-        novelfile.close()
+            print ('正在下载第', list_number ,'章')
+            novelfile.close()
+
 
 
 
